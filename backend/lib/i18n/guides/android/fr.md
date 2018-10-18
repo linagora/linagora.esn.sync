@@ -79,7 +79,7 @@ Les appareils Android ne gèrent pas nativement les protocoles CalDAV et CardDAV
     ![menu Paramètres|Sécurité](/sync/images/fr/android_davdroid_settings_security.png)
     ![autoriser sources_inconnues](/sync/images/fr/android_davdroid_unknown_src.png)
 
-2. Téléchargez le fichier [DAVdroid apk].
+2. Téléchargez le fichier [DAVdroid apk](/sync/downloads/davdroid/at.bitfire.davdroid_245.apk).
 3. Ouvrez l'application `Téléchargements` ou si absente, `L'explorateur de fichier`.
 4. Dans le dossier *Téléchargement*, faites défiler le texte jusqu'en bas.
 5. Localisez puis appuyez sur le dernier fichier téléchargé pour lancer l'installation.
@@ -118,5 +118,3 @@ Les appareils Android ne gèrent pas nativement les protocoles CalDAV et CardDAV
     ![DAV enable automated sync](/sync/images/fr/android_davdroid_enable_autosync.png)
 
 7. Il est possible d'ajuster les paramètres de synchronisation en naviguant dans le menu propriété symbolisé par l'icône engrenage.
-
-[DAVdroid apk]: https://f-droid.org/repo/at.bitfire.davdroid_245.apk

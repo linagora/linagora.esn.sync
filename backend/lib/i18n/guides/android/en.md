@@ -74,7 +74,7 @@ By default, Android devices do not natively support the CalDAV and CardDAV proto
 
     ![enable unknown sources](/sync/images/en/android_davdroid_unknown_src.png)
 
-2. You can then Download the [DAVdroid apk] file.
+2. You can then Download the [DAVdroid apk](/sync/downloads/davdroid/at.bitfire.davdroid_245.apk) file.
 3. Open the `Downloads` app, or if missing the `File explorer` app.
 4. Within the *Downloads* folder, scroll down to the bottom if necessary.
 5. Find and tap the most recent downloaded item.
@@ -109,5 +109,3 @@ By default, Android devices do not natively support the CalDAV and CardDAV proto
     ![DAV enable automated sync](/sync/images/en/android_davdroid_enable_autosync.png)
 
 7. You may tap on the *gear icon* to adjust synchronization settings.
-
-[DAVdroid apk]: https://f-droid.org/repo/at.bitfire.davdroid_245.apk
