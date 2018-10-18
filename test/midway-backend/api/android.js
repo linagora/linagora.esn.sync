@@ -37,7 +37,7 @@ describe('The Sync module', function() {
     let app;
 
     beforeEach(function() {
-      app = require('../../backend/webserver/application')(helpers.modules.current.deps);
+      app = require('../../../backend/webserver/application')(helpers.modules.current.deps);
     });
 
     it('should return 401 if not logged in', function(done) {

@@ -1,11 +1,10 @@
-'use strict';
+const archiver = require('archiver');
+const ejs = require('ejs');
+const q = require('q');
+const path = require('path');
 
-const archiver = require('archiver'),
-      ejs = require('ejs'),
-      q = require('q');
-
-const PREFS = 'defaults/preferences/op-tb-autoconf.js',
-      EXTENSION_BASE_PATH = './modules/linagora.esn.sync/downloads/op-tb-autoconf/';
+const PREFS = 'defaults/preferences/op-tb-autoconf.js';
+const EXTENSION_BASE_PATH = path.normalize(path.join(__dirname, '../../../downloads/op-tb-autoconf/'));
 
 module.exports = dependencies => {
   const esnConfig = dependencies('esn-config'),

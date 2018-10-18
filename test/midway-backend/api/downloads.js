@@ -31,7 +31,7 @@ describe('The Sync module', function() {
     let app;
 
     beforeEach(function() {
-      app = require('../../backend/webserver/application')(helpers.modules.current.deps);
+      app = require('../../../backend/webserver/application')(helpers.modules.current.deps);
     });
 
     it('should return 401 if not logged in', function(done) {
@@ -48,9 +48,7 @@ describe('The Sync module', function() {
           expect(res.text.substring(0, 4)).to.equal('PK\u0003\u0004'); // https://users.cs.jmu.edu/buchhofp/forensics/formats/pkzip.html
 
           done();
-        });
+        }, done);
     });
-
   });
-
 });
