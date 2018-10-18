@@ -1,0 +1,50 @@
+image: linagora/node-test-base:8
+
+stages:
+  - test
+  - deploy_dev
+
+test:
+  stage: test
+  tags:
+    - docker
+  image: docker-registry.linagora.com:5000/public-releases/openpaas-esn-test-helper:1.0.0
+  services:
+    - name: mongo:3.4
+      alias: mongo
+    - name: elasticsearch:2.4
+      alias: elasticsearch
+    - name: redis:3
+      alias: redis
+    - name: rabbitmq:3.6
+      alias: rabbitmq
+  variables:
+    MONGO_HOST: mongo
+    MONGO_PORT: 27017
+
+  script:
+    - npm i
+    - bower i --allow-root
+    - grunt --chunk=1 --ci
+
+.deploy_dev:
+  stage: deploy_dev
+  tags:
+    - dev.open-paas.org
+    - deployment
+  environment:
+    name: dev
+    url: https://dev.open-paas.org
+  only:
+    - master
+  script:
+    - cd /srv/${CI_PROJECT_NAME}
+    - git fetch --all
+    - git checkout ${CI_COMMIT_SHA}
+    - npm install --production
+    - npm update --production
+    - npm prune
+    - bower install --production
+    - bower prune
+    - git checkout -- .
+    - sudo /etc/init.d/rse.dev restart
