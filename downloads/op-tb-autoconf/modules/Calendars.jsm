@@ -23,13 +23,13 @@ const logger = getLogger('Calendars'),
 const Calendars = {
 
   setupCalendars: function(calendarSpecs) {
-    let rootUrl = Prefs.get('extensions.op.autoconf.rootUrl');
+    let davUrl = Prefs.get('extensions.op.autoconf.davUrl');
 
     calendarSpecs.forEach(calendarSpec => {
       let name = calendarSpec.name,
           calendar = Calendars.find(name);
 
-      calendarSpec.uri = utils.newURI(rootUrl + calendarSpec.uri);
+      calendarSpec.uri = utils.newURI(davUrl + calendarSpec.uri);
 
       if (!calendar) {
         logger.info('About to create a new ' + CALDAV + ' calendar ${name}', { name });

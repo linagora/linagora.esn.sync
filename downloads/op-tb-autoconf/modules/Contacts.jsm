@@ -22,7 +22,7 @@ const logger = getLogger('Contacts'),
 const Contacts = {
 
   setupAddressBooks: function(books) {
-    let rootUrl = Prefs.get('extensions.op.autoconf.rootUrl');
+    let davUrl = Prefs.get('extensions.op.autoconf.davUrl');
 
     books.forEach(book => {
       let id = book.id,
@@ -35,7 +35,7 @@ const Contacts = {
 
       logger.info('About to create address book ${name} at ${uri} in CardBook', { name, uri });
 
-      cardbookRepository.addAccountToRepository(id, name, CARDDAV, rootUrl + uri, book.username, book.color, /* enabled */ true, /* expanded */ true, VCARD, book.readOnly, /* persist */ true);
+      cardbookRepository.addAccountToRepository(id, name, CARDDAV, davUrl + uri, book.username, book.color, /* enabled */ true, /* expanded */ true, VCARD, book.readOnly, /* persist */ true);
     });
   },
 
