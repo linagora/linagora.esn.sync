@@ -73,14 +73,10 @@ class Utils {
       return object;
     }
 
-    let copy = {},
+    let copy = {...object},
         props = Array.isArray(properties) ? properties : [properties];
 
-    for (let key in object) {
-      if (props.indexOf(key) === -1 && object.hasOwnProperty(key)) {
-        copy[key] = object[key];
-      }
-    }
+    props.forEach(prop => delete copy[prop]);
 
     return copy;
   }
