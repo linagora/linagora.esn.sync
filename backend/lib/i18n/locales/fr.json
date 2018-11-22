@@ -10,5 +10,7 @@
   "Sync an Android device with OpenPaaS": "Mettre en place la synchronisation avec un appareil Android",
   "Click here to learn how to synchronize your iOS device with OpenPaaS": "Cliquez ici pour apprendre à synchroniser votre appareil iOS avec OpenPaaS",
   "iOS": "iOS",
-  "Sync an iOS device with OpenPaaS": "Mettre en place la synchronisation avec un appareil iOS"
+  "Sync an iOS device with OpenPaaS": "Mettre en place la synchronisation avec un appareil iOS",
+  "Click here to learn how to synchronize Thunderbird with OpenPaaS": "Cliquez ici pour apprendre à synchroniser Thunderbird avec OpenPaaS",
+  "Sync Thunderbird with OpenPaaS": "Synchroniser Thunderbird avec OpenPaaS"
 }
