@@ -30,6 +30,14 @@ angular.module('linagora.esn.sync', [
           }
         }
       })
+      .state('controlcenter.sync.thunderbird', {
+        url: '/thunderbird',
+        views: {
+          sync: {
+            template: '<sync-thunderbird />'
+          }
+        }
+      })
       .state('controlcenter.sync.outlook', {
         url: '/outlook',
         views: {

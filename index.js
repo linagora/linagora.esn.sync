@@ -12,6 +12,7 @@ const angularAppModuleFiles = [
   'components/android/android.js',
   'components/ios/ios.js',
   'components/outlook/outlook.js',
+  'components/thunderbird/thunderbird.js',
   'components/controlcenter-menu-entry/controlcenter-menu-entry.js'
 ];
 const modulesOptions = {
