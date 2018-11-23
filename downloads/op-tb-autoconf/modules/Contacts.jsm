@@ -23,6 +23,7 @@ const Contacts = {
 
   setupAddressBooks: function(books) {
     let davUrl = Prefs.get('extensions.op.autoconf.davUrl');
+    let interval = Prefs.get('extensions.op.autoconf.interval')
 
     books.forEach(book => {
       let id = book.id,
@@ -35,7 +36,7 @@ const Contacts = {
 
       logger.info('About to create address book ${name} at ${uri} in CardBook', { name, uri });
 
-      cardbookRepository.addAccountToRepository(id, name, CARDDAV, davUrl + uri, book.username, book.color, /* enabled */ true, /* expanded */ true, VCARD, book.readOnly, /* persist */ true);
+      cardbookRepository.addAccountToRepository(id, name, CARDDAV, davUrl + uri, book.username, book.color, /* enabled */ true, /* expanded */ true, VCARD, book.readOnly, /*Urnuuid*/ false, /*DBcache*/ false, /*AutoSync*/ true, interval, /* persist */ true);
     });
   },
 
