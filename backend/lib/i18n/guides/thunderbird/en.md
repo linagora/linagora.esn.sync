@@ -17,33 +17,33 @@ Download the [OpenPaaS add-on for Thunderbird](/sync/downloads/thunderbird/op-tb
 
 ## Installation and configuration
 
-If you never configured any email address before, Thunderbird will show the following screen upon startup.
+1. If you never configured any email address before, Thunderbird will show the following screen upon startup.
 
     ![create_address](/sync/images/en/thunderbird_create_address.png)
 
-Click `Cancel`.
+2. Click `Cancel`.
 
-Click on the menu icon as shown below.
+3. Click on the menu icon as shown below.
 
     ![open_menu](/sync/images/en/thunderbird_open_menu.png)
 
-Then click on `Add-ons`.
+4. Then click on `Add-ons`.
 
-In the add-ons management screen, click `Extensions` in the left column and then on the gear icon.
+5. In the add-ons management screen, click `Extensions` in the left column and then on the gear icon.
 
     ![modules_menu](/sync/images/en/thunderbird_modules_menu.png)
 
-Finally, click on `Install Add-on From File...` to select the OpenPaaS add-on file you previously downloaded. On the next screen, wait for the `Install` button countdown to reach zero. Then click on `Install Now`.
+6. Finally, click on `Install Add-on From File...` to select the OpenPaaS add-on file you previously downloaded. On the next screen, wait for the `Install` button countdown to reach zero. Then click on `Install Now`.
 
     ![install_countdown](/sync/images/en/thunderbird_install_now.png)
 
-Thunderbird will need to restar. Click `Restart now`.
+7. Thunderbird will need to restar. Click `Restart now`.
 
-Upon startup, the following window will ask for your OpenPaaS login and password.
+8. Upon startup, the following window will ask for your OpenPaaS login and password.
 
     ![enter_account](/sync/images/en/thunderbird_enter_account.png)
 
-Thunderbird starts and asks again if you want to configure an existing email address. Click `Cancel`. The software will undergo a second restart, asking for your OpenPaaS login and password again. Please note that you can now click the `Save your credentials` tickbox to avoid having to enter them again.
+9. Thunderbird starts and asks again if you want to configure an existing email address. Click `Cancel`. The software will undergo a second restart, asking for your OpenPaaS login and password again. Please note that you can now click the `Save your credentials` tickbox to avoid having to enter them again.
 
 You will notice in the add-ons management screen that the Lightning and Cardbook add-ons have been installed if they were not.
 
