@@ -22,13 +22,14 @@ const Directories = {
 
   setupDirectories: function(directories) {
     directories.forEach(directory => {
-      let dirName = directory.dirName,
-          book = Directories.find(dirName);
+      const dirName = directory.name,
+            directoryUri = directory.configuration.url;
+      let book = Directories.find(dirName);
 
       if (!book) {
         logger.info('About to create a new LDAP address book ${}', { directory });
 
-        manager.newAddressBook(dirName, directory.uri, /* LDAP */ 0);
+        manager.newAddressBook(dirName, directoryUri, /* LDAP */ 0);
         book = Directories.find(dirName);
       }
 
