@@ -12,6 +12,7 @@ Cu.import('resource://gre/modules/Services.jsm');
 Cu.import('resource://gre/modules/AddonManager.jsm');
 Cu.import('resource://op-tb-autoconf/modules/Log.jsm');
 Cu.import('resource://op-tb-autoconf/modules/Utils.jsm');
+Cu.import('resource://op-tb-autoconf/modules/Prefs.jsm');
 
 /////
 
@@ -32,16 +33,17 @@ const Addons = {
       logger.debug('Setting up addon ${name} ${id}', { id, name });
 
       let versions = addonSpec.versions.filter(isVersionCompatible).sort(descendingVersionOrder);
-
+      
       if (versions.length === 0) {
         return logger.warn('No compatible version found for addon ${name}', { name });
       }
-
+      
       AddonManager.getAddonByID(id, addon => {
         let latestVersion = versions[0];
-
+        
         // Either the addon is not installed yet or it can be upgraded
         if (!addon || versionComparator.compare(addon.version, latestVersion.version) < 0) {
+          Prefs.set('extensions.op.autoconf.addon-' + name + '.version', latestVersion.version);
           return installAddon(installers, name, latestVersion);
         }
 
