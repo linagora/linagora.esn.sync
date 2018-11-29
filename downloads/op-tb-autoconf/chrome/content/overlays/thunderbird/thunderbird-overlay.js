@@ -51,8 +51,7 @@ function autoconfigure(config) {
   Accounts.setupAccounts(config.accounts);
   Addons.setupAddons(config.addons);
   Prefs.setupPreferences(config.preferences);
-  Prefs.set('extensions.op.autoconf.davUrl', config.davConfig.frontend.url.replace(/\/$/, ''));
-  Directories.setupDirectories(config.directories);
+  Prefs.set('extensions.op.autoconf.davUrl', config.davUrl.replace(/\/$/, ''));
 
   if (Calendars.isLightningInstalled()) {
     Calendars.setupCalendars(config.calendars);
