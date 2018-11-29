@@ -6,7 +6,6 @@ Cu.import('resource://op-tb-autoconf/modules/Log.jsm');
 Cu.import('resource://op-tb-autoconf/modules/Accounts.jsm');
 Cu.import('resource://op-tb-autoconf/modules/Addons.jsm');
 Cu.import('resource://op-tb-autoconf/modules/Prefs.jsm');
-Cu.import('resource://op-tb-autoconf/modules/Directories.jsm');
 Cu.import('resource://op-tb-autoconf/modules/Calendars.jsm');
 Cu.import('resource://op-tb-autoconf/modules/Contacts.jsm');
 Cu.import('resource://op-tb-autoconf/modules/Passwords.jsm');
