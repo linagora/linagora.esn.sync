@@ -6,7 +6,6 @@ Cu.import('resource://op-tb-autoconf/modules/Log.jsm');
 Cu.import('resource://op-tb-autoconf/modules/Accounts.jsm');
 Cu.import('resource://op-tb-autoconf/modules/Addons.jsm');
 Cu.import('resource://op-tb-autoconf/modules/Prefs.jsm');
-Cu.import('resource://op-tb-autoconf/modules/Directories.jsm');
 Cu.import('resource://op-tb-autoconf/modules/Calendars.jsm');
 Cu.import('resource://op-tb-autoconf/modules/Contacts.jsm');
 Cu.import('resource://op-tb-autoconf/modules/Passwords.jsm');
@@ -51,8 +50,7 @@ function autoconfigure(config) {
   Accounts.setupAccounts(config.accounts);
   Addons.setupAddons(config.addons);
   Prefs.setupPreferences(config.preferences);
-  Prefs.set('extensions.op.autoconf.davUrl', config.davConfig.frontend.url.replace(/\/$/, ''));
-  Directories.setupDirectories(config.directories);
+  Prefs.set('extensions.op.autoconf.davUrl', config.davUrl.replace(/\/$/, ''));
 
   if (Calendars.isLightningInstalled()) {
     Calendars.setupCalendars(config.calendars);
