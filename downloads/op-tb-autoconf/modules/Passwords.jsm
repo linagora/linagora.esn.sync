@@ -82,7 +82,7 @@ function findLogin(url, username, form = null, realm = REALM) {
     let login = logins[i];
 
     if (!username || (login.username === username)) {
-      logger.debug('Returning found credentials for username ${username}. ${login}', { username, login });
+      logger.debug(`Returning found credentials for username ${username}`);
 
       return login;
     }
