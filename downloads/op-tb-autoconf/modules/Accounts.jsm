@@ -28,7 +28,7 @@ const Accounts = {
           account = createOrUpdateAccount(imapServer);
 
       accountSpec.identities.forEach(identitySpec => {
-        let identity = utils.find(account.identities, Ci.nsIMsgIdentity, { identityName: identitySpec.identityName });
+        let identity = utils.find(account.identities, Ci.nsIMsgIdentity, { identityName: `${identitySpec.fullName} <${identitySpec.email}>` });
 
         if (!identity) {
           logger.info('About to create a new identity for IMAP server ' + imapServer.key);
@@ -36,10 +36,10 @@ const Accounts = {
           identity = manager.createIdentity();
           identity.smtpServerKey = smtpServer.key;
 
+          identity = utils.copyProperties(identitySpec, identity, imapServer);
           account.addIdentity(identity);
         }
 
-        utils.copyProperties(identitySpec, identity, imapServer);
       });
     });
   }
