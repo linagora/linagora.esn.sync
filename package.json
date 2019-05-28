@@ -1,6 +1,6 @@
 {
   "name": "linagora.esn.sync",
-  "version": "1.4.8-dev",
+  "version": "1.4.8",
   "description": "OpenPaaS Sync Module",
   "main": "index.js",
   "devDependencies": {
