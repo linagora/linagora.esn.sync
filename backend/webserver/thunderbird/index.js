@@ -20,7 +20,7 @@ module.exports = dependencies => {
    *       500:
    *         $ref: "#/responses/cm_500"
    */
-  router.get('/thunderbird/guide', auth.requiresAPILogin, controller.renderGuide);
+  router.get('/thunderbird/guide', auth.requiresAPILogin, controller.renderThunderbirdGuide);
 
   return router;
 };
