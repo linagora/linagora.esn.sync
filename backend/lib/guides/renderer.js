@@ -15,7 +15,8 @@ module.exports = dependencies => {
     return esnConfig('autoconf').inModule('core').forUser(user).get()
       .then(config => {
         if (!config) {
-          return q.reject(new Error('No autoconfiguration file configured in DB'));
+          return _readMarkdownFile(CATEGORIES.noconfig, locale)
+            .then(markdown => ejs.render(markdown));
         }
 
         return _readMarkdownFile(category, locale)
