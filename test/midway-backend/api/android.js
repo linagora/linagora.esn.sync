@@ -44,11 +44,17 @@ describe('The Sync module', function() {
       helpers.api.requireLogin(app, 'get', '/android/guide', done);
     });
 
-    it('should return 500 when there is no autoconf document in database', function(done) {
+    it('should return no config guide when there is no autoconf document in database', function(done) {
       request(app)
         .get('/android/guide')
         .auth(user, password)
-        .expect(500, done);
+        .expect(200)
+        .then(res => {
+          expect(res.text).to.contain('OpenPaaS is not set up correctly to synchronize with external applications');
+
+          done();
+        })
+        .catch(done);
     });
 
     it('should return 200 with the english HTML document if no specific locale is requested', function(done) {

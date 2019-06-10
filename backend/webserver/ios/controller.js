@@ -1,52 +1,25 @@
-'use strict';
-
-const fs = require('fs'),
-      path = require('path'),
-      q = require('q');
-
 module.exports = dependencies => {
-  const logger = dependencies('logger'),
-    {preProcess, toHTML} = require('../../lib/guides/renderer')(dependencies);
+  const logger = dependencies('logger');
+  const { renderMarkdownForUser } = require('../../lib/guides/renderer')(dependencies);
+  const { CATEGORIES } = require('../../lib/constants');
 
   return {
-    renderAndroidGuide
+    renderIosGuide
   };
 
-  /////
-
-  function androidGuideFile(locale) {
-    return path.normalize(path.join(__dirname, '../../lib/i18n/guides/ios/' + locale + '.md'));
-  }
-
-  function readLocalizedTemplate(locale) {
-    return q.nfcall(fs.readFile, androidGuideFile(locale), { encoding: 'utf-8' });
-  }
-
-  function fallbackToEnglishGuide(locale) {
-    return err => {
-      logger.warn(`Could not read ios guide from the filesystem using locale ${locale}. Falling back to english version`, err);
-
-      return readLocalizedTemplate('en');
-    };
-  }
-
-  function getTemplate(locale) {
-    return readLocalizedTemplate(locale)
-      .catch(fallbackToEnglishGuide(locale));
-  }
-
-  function renderAndroidGuide(req, res) {
+  function renderIosGuide(req, res) {
     const locale = req.getLocale();
 
-    getTemplate(locale)
-      .then(preProcess(req.user))
-      .then(toHTML)
-      .then(
-        html => res.status(200).send(html),
-        err => res.status(500).json({ error: {
+    renderMarkdownForUser(CATEGORIES.ios, locale, req.user)
+      .then(html => res.status(200).send(html))
+      .catch(err => {
+        logger.error('Error while render html guide', err);
+
+        res.status(500).json({ error: {
           code: 500,
-          message: `Cannot render '${locale}' user guide`, details: err.message
-        }})
-      );
+          message: 'Server Error',
+          details: 'Error while render html guide'
+        }});
+      });
   }
 };

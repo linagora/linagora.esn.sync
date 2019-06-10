@@ -20,7 +20,7 @@ module.exports = dependencies => {
    *       500:
    *         $ref: "#/responses/cm_500"
    */
-  router.get('/outlook/guide', auth.requiresAPILogin, controller.renderAndroidGuide);
+  router.get('/outlook/guide', auth.requiresAPILogin, controller.renderOutlookGuide);
 
   return router;
 };
