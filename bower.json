@@ -1,7 +1,7 @@
 {
   "name": "linagora.esn.sync",
   "main": "index.js",
-  "version": "1.4.10",
+  "version": "1.4.11-dev",
   "authors": [
     "Linagora Folks <openpaas@linagora.com>"
   ],
