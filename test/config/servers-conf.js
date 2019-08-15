@@ -1,34 +1,34 @@
-'use strict';
-
 /* eslint-disable no-process-env */
 
 const DEFAULT_PORTS = {
-  express: 23455,
-  mongo: 23456
+  express: 23455
 };
-
-const mongoHost = process.env.MONGO_HOST || process.env.HOSTNAME || process.env.DOCKER_HOST || 'localhost';
-const mongoPort = process.env.MONGO_PORT || DEFAULT_PORTS.mongo;
 
 module.exports = {
   host: process.env.HOSTNAME || process.env.DOCKER_HOST || 'localhost',
+
   express: {
     port: process.env.PORT_EXPRESS || DEFAULT_PORTS.express
   },
+
   redis: {
     host: 'redis',
     port: 6379,
     url: 'redis://redis:6379'
   },
+
   mongodb: {
     host: 'mongo',
     port: 27017,
-    connectionString: `mongodb://${mongoHost}:${mongoPort}/tests`
+    connectionString: 'mongodb://mongo/tests'
   },
+
   elasticsearch: {
     host: 'elasticsearch',
-    port: 9200
+    port: 9200,
+    interval_index: 1000
   },
+
   rabbitmq: {
     host: 'rabbitmq',
     port: 5672,
