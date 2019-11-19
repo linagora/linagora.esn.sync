@@ -74,7 +74,7 @@ const Passwords = {
 /////
 
 function findLogin(url, username, form = null, realm = REALM) {
-  const logins = manager.findLogins(url, form, realm);
+  let logins = manager.findLogins({}, url, form, realm);
 
   logger.debug('There are ${count} stored passwords for ${url} using realm ${realm} and form ${form}', { count: logins.length, url, form, realm });
 

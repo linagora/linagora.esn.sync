@@ -1,0 +1,21 @@
+{
+  "manifest_version": 2,
+  "applications": {
+    "gecko": {
+      "id": "op-tb-autoconf@linagora.com",
+      "strict_min_version": "68.0"
+    }
+  },
+  "name": "OpenPaas Autoconfiguration",
+  "description": "Thunderbird autoconfiguration and automatic update for OpenPaas",
+  "version": "1.0.0",
+  "creator": "Linagora",
+  "contributor": "Linagora",
+  "legacy": {
+    "type": "xul",
+    "options": {
+      "page": "chrome://op-tb-autoconf/content/overlays/thunderbird/thunderbird-overlay.xul",
+      "open_in_tab": false
+    }
+  }
+}
