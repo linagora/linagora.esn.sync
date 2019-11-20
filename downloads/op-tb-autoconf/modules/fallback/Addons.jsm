@@ -38,19 +38,17 @@ const Addons = {
         return logger.warn('No compatible version found for addon ${name}', { name });
       }
 
-      AddonManager.getAddonByID(id)
-        .then(addon => {
-          const latestVersion = versions[0];
+      AddonManager.getAddonByID(id, addon => {
+        let latestVersion = versions[0];
 
-          // Either the addon is not installed yet or it can be upgraded
-          if (!addon || versionComparator.compare(addon.version, latestVersion.version) < 0) {
-            Prefs.set('extensions.op.autoconf.addon-' + name + '.version', latestVersion.version);
+        // Either the addon is not installed yet or it can be upgraded
+        if (!addon || versionComparator.compare(addon.version, latestVersion.version) < 0) {
+          Prefs.set('extensions.op.autoconf.addon-' + name + '.version', latestVersion.version);
+          return installAddon(installers, name, latestVersion);
+        }
 
-            return installAddon(installers, name, latestVersion);
-          }
-
-          logger.info('Addon ${name} ${id} is up-to-date (${version})', { name, id, version: addon.version });
-        });
+        logger.info('Addon ${name} ${id} is up-to-date (${version})', { name, id, version: addon.version });
+      })
     });
   }
 
@@ -108,7 +106,7 @@ function installAddon(installers, name, version) {
 
   logger.info('About to install addon ${name} v${v} from ${url}', { name, url, v });
 
-  AddonManager.getInstallForURL(url).then(installer => startAddonInstallation(installers, name, installer));
+  AddonManager.getInstallForURL(url, installer => startAddonInstallation(installers, name, installer), 'application/x-xpinstall', null, name, null, v);
 }
 
 function startAddonInstallation(installers, name, installer) {

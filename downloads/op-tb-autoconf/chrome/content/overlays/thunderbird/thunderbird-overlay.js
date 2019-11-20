@@ -1,16 +1,30 @@
 'use strict';
 
+const Cc = Components.classes;
+const Ci = Components.interfaces;
 const Cu = Components.utils;
 
-Cu.import('resource://op-tb-autoconf/modules/Log.jsm');
-Cu.import('resource://op-tb-autoconf/modules/Accounts.jsm');
-Cu.import('resource://op-tb-autoconf/modules/Addons.jsm');
-Cu.import('resource://op-tb-autoconf/modules/Prefs.jsm');
-Cu.import('resource://op-tb-autoconf/modules/Calendars.jsm');
-Cu.import('resource://op-tb-autoconf/modules/Contacts.jsm');
-Cu.import('resource://op-tb-autoconf/modules/Passwords.jsm');
 Cu.import('resource://gre/modules/Http.jsm');
 Cu.import('resource://gre/modules/Services.jsm');
+
+const appVersion = Services.appinfo.version
+const versionComparator = Cc['@mozilla.org/xpcom/version-comparator;1'].getService(Ci.nsIVersionComparator);
+
+// Breaking changes: https://developer.thunderbird.net/add-ons/tb68/changes
+if (versionComparator.compare(appVersion, '68') < 0) {
+  Cu.import('resource://op-tb-autoconf/modules/fallback/Accounts.jsm');
+  Cu.import('resource://op-tb-autoconf/modules/fallback/Addons.jsm');
+  Cu.import('resource://op-tb-autoconf/modules/fallback/Passwords.jsm');
+} else {
+  Cu.import('resource://op-tb-autoconf/modules/Accounts.jsm');
+  Cu.import('resource://op-tb-autoconf/modules/Addons.jsm');
+  Cu.import('resource://op-tb-autoconf/modules/Passwords.jsm');
+}
+
+Cu.import('resource://op-tb-autoconf/modules/Calendars.jsm');
+Cu.import('resource://op-tb-autoconf/modules/Contacts.jsm');
+Cu.import('resource://op-tb-autoconf/modules/Log.jsm');
+Cu.import('resource://op-tb-autoconf/modules/Prefs.jsm');
 
 let logger = getLogger('Overlay'),
     interval = Prefs.get('extensions.op.autoconf.interval'),
