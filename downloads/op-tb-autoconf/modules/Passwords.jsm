@@ -9,84 +9,94 @@ const Cc = Components.classes;
 const Ci = Components.interfaces;
 const CC = Components.Constructor;
 
-Cu.import('resource://gre/modules/Services.jsm');
-Cu.import('resource://gre/modules/Preferences.jsm');
-Cu.import('resource://op-tb-autoconf/modules/Log.jsm');
+var { ExtensionParent } = ChromeUtils.import("resource://gre/modules/ExtensionParent.jsm");
+var extension = ExtensionParent.GlobalManager.getExtension("op-tb-autoconf@linagora.com");
+
+var { Services } = ChromeUtils.import('resource://gre/modules/Services.jsm');
+var { Preferences } = ChromeUtils.import('resource://gre/modules/Preferences.jsm');
+var { getLogger } = ChromeUtils.import(extension.rootURI.resolve("modules/Log.jsm"));
 
 /////
 
 const logger = getLogger('Passwords'),
-      strBundle = Services.strings.createBundle('chrome://op-tb-autoconf/locale/op-tb-autoconf.properties'),
       manager = Cc['@mozilla.org/login-manager;1'].getService(Ci.nsILoginManager),
       LoginInfo = CC('@mozilla.org/login-manager/loginInfo;1', Ci.nsILoginInfo, 'init'),
       REALM = 'ESN',
       FORM_SUBMIT_URL = 'User login';
 
+let strBundle;
+try {
+  strBundle = Services.strings.createBundle('chrome://locale/op-tb-autoconf.properties');
+  strBundle.GetStringFromName('promptUsernameAndPassword.title');
+} catch (err) {
+  strBundle = Services.strings.createBundle(extension.rootURI.resolve('chrome/locale/en-US/op-tb-autoconf.properties'));
+}
 const Passwords = {
 
   getCredentialsForUsername: function(username) {
-    let url = Preferences.get('extensions.op.autoconf.rootUrl'),
-        oldLogin = findLogin(url, username);
+    const oldLogin = findLogin(username);
 
-    if (oldLogin) {
-      return oldLogin;
+    if (oldLogin && oldLogin.length) {
+      return oldLogin[0];
+    } else {
+      const login = { value: username },
+          password = {};
+
+      Services.prompt.promptUsernameAndPassword(
+        null,
+        strBundle.GetStringFromName('promptUsernameAndPassword.title'),
+        strBundle.GetStringFromName('promptUsernameAndPassword.text'),
+        login,
+        password,
+        null,
+        {}
+      );
+
+      return {
+        username: login.value,
+        password: password.value
+      };
     }
+  },
 
-    let login = { value: username },
-        password = {};
-
-    Services.prompt.promptUsernameAndPassword(
-      null,
-      strBundle.GetStringFromName('promptUsernameAndPassword.title'),
-      strBundle.GetStringFromName('promptUsernameAndPassword.text'),
-      login,
-      password,
-      null,
-      {}
-    );
-
-    Passwords.storePassword(url, login.value, password.value, null, REALM); // Lightning
-
-    return Passwords.storePassword(url, login.value, password.value, FORM_SUBMIT_URL, null); // CardBook
+  storeOverallPassword(username, password) {
+    const url = Preferences.get('extensions.op.autoconf.rootUrl');
+    Passwords.storePassword(url, username, password, null, REALM); // Lightning
+    Passwords.storePassword(url, username, password, FORM_SUBMIT_URL, null); // CardBook
   },
 
   storePassword(url, username, password, form = null, realm = REALM) {
     if (!username || !password) {
-      return logger.warn('Cannot store null username or password for ${url}', { url });
+      return logger.warn(`Cannot store null username or password for ${url}`);
     }
 
-    let oldLogin = findLogin(url, username, form, realm),
+    const allRelatedLogins = findLogin(username),
         login = new LoginInfo(url, form, realm, username, password, '', '');
-
+    const oldLogin = (allRelatedLogins || []).find(lgin => lgin && lgin.hostname === url && lgin.formSubmitURL === form && lgin.httpRealm === realm);
     if (oldLogin) {
-      manager.modifyLogin(oldLogin, login);
+      const newLogin = oldLogin.clone();
+      newLogin.username = username;
+      newLogin.password = password;
+      manager.modifyLogin(oldLogin, newLogin);
     } else {
       manager.addLogin(login);
     }
 
-    logger.info('Successfully stored password for ${username} on ${url} using realm ${realm} and form ${form}', { username, url, form, realm });
-
+    logger.info(`Successfully stored password for ${username} on ${url} using realm ${realm} and form ${form}`);
     return login;
   }
-
 };
 
 /////
 
-function findLogin(url, username, form = null, realm = REALM) {
-  const logins = manager.findLogins(url, form, realm);
-
-  logger.debug('There are ${count} stored passwords for ${url} using realm ${realm} and form ${form}', { count: logins.length, url, form, realm });
-
-  for (let i = 0; i < logins.length; i++) {
-    let login = logins[i];
-
-    if (!username || (login.username === username)) {
-      logger.debug(`Returning found credentials for username ${username}`);
-
-      return login;
-    }
+function findLogin(username) {
+  const logins = manager.getAllLogins();
+  const queriedLogin = logins.filter(function(login) {
+    return !username || (login.username === username);
+  });
+  if (queriedLogin) {
+    logger.debug(`Returning found credentials for username ${username}`);
+    return queriedLogin;
   }
-
   return null;
 }

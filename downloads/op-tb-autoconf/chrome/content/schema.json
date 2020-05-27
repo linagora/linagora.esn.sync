@@ -1,0 +1,14 @@
+[
+  {
+    "namespace": "OpenPaasAutoconf",
+    "functions": [
+      {
+        "name": "scheduling",
+        "type": "function",
+        "description": "Schedule to update auto configuration.",
+        "async": true,
+        "parameters": []
+      }
+    ]
+  }
+]

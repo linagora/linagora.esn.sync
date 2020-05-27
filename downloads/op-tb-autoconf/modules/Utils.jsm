@@ -6,8 +6,11 @@ const EXPORTED_SYMBOLS = ['Utils'];
 
 const Cu = Components.utils;
 
-Cu.import('resource://gre/modules/Services.jsm');
-Cu.import('resource://op-tb-autoconf/modules/Log.jsm');
+var { ExtensionParent } = ChromeUtils.import("resource://gre/modules/ExtensionParent.jsm");
+var extension = ExtensionParent.GlobalManager.getExtension("op-tb-autoconf@linagora.com");
+
+var { Preferences } = ChromeUtils.import('resource://gre/modules/Preferences.jsm');
+var { Log } = ChromeUtils.import(extension.rootURI.resolve("modules/Log.jsm"));
 
 /////
 
@@ -17,18 +20,18 @@ class Utils {
   }
 
   find(arrayOrEnumerator, iid, match, primaryKey) {
-    let enumerator = arrayOrEnumerator.enumerate ? arrayOrEnumerator.enumerate() : arrayOrEnumerator;
+    const enumerator = arrayOrEnumerator.enumerate ? arrayOrEnumerator.enumerate() : arrayOrEnumerator;
 
     enumeration: while (enumerator.hasMoreElements()) {
-      let server = enumerator.getNext().QueryInterface(iid),
+      const server = enumerator.getNext().QueryInterface(iid),
           key = primaryKey ? server[primaryKey] : server.key;
 
-      this.logger.info('Matching ' + iid + ' ${key} against ${match}', { match, key});
+      this.logger.info(`Matching ${iid} ${key} against ${match}`);
 
-      for (let key in match) {
-        if (match.hasOwnProperty(key)) {
-          if (match[key] !== server[key]) {
-            this.logger.debug('Property ${key} value ${actual} does not match ${expected}', { key, actual: server[key], expected: match[key] });
+      for (const k in match) {
+        if (match.hasOwnProperty(k)) {
+          if (match[k] !== server[k]) {
+            this.logger.debug(`Property ${k} value ${server[k]} does not match ${match[k]}`);
 
             continue enumeration;
           }
@@ -52,12 +55,12 @@ class Utils {
         value = value.replace(/%(.*)%/, (match, property) => context[property] || match);
       }
 
-      this.logger.debug('Setting property ${key} to ${value}', {key, value});
+      this.logger.debug(`Setting property ${key} to ${value}`);
 
       try {
         destination[key] = value;
       } catch (e) {
-        this.logger.error('Could not set property ${key}: ${e}', { key, e });
+        this.logger.error(`Could not set property ${key}: ${e}`);
       }
     });
 
@@ -73,7 +76,7 @@ class Utils {
       return object;
     }
 
-    let copy = {...object},
+    const copy = {...object},
         props = Array.isArray(properties) ? properties : [properties];
 
     props.forEach(prop => delete copy[prop]);
@@ -82,12 +85,12 @@ class Utils {
   }
 
   restartWithPrompt() {
-    let strBundle = Services.strings.createBundle('chrome://op-tb-autoconf/locale/op-tb-autoconf.properties');
+    const strBundle = Services.strings.createBundle('chrome://op-tb-autoconf/locale/op-tb-autoconf.properties');
 
     if (Services.prompt.confirm(null, strBundle.GetStringFromName('restart.title'), strBundle.GetStringFromName('restart.text'))) {
       this.logger.info('About to restart Thunderbird');
 
-      Services.startup.quit(Services.startup.eForceQuit | Services.startup.eRestart);
+      Services.startup.quit(Services.startup.eForceQuit || Services.startup.eRestart);
     }
   }
 }

@@ -5,14 +5,14 @@ const EXPORTED_SYMBOLS = ['Calendars'];
 /////
 
 const Cu = Components.utils;
+var { ExtensionParent } = ChromeUtils.import('resource://gre/modules/ExtensionParent.jsm');
+var extension = ExtensionParent.GlobalManager.getExtension('op-tb-autoconf@linagora.com');
 
-try {
-  Cu.import('resource://calendar/modules/calUtils.jsm');
-} catch(e) {}
+let cal;
 
-Cu.import('resource://op-tb-autoconf/modules/Log.jsm');
-Cu.import('resource://op-tb-autoconf/modules/Utils.jsm');
-Cu.import('resource://op-tb-autoconf/modules/Prefs.jsm');
+var { getLogger } = ChromeUtils.import(extension.rootURI.resolve('modules/Log.jsm'));
+var { Utils } = ChromeUtils.import(extension.rootURI.resolve('modules/Utils.jsm'));
+var { Prefs } = ChromeUtils.import(extension.rootURI.resolve('modules/Prefs.jsm'));
 
 /////
 
@@ -23,11 +23,16 @@ const logger = getLogger('Calendars'),
 const Calendars = {
 
   setupCalendars: function(calendarSpecs) {
-    let davUrl = Prefs.get('extensions.op.autoconf.davUrl');
+    try {
+      cal = ChromeUtils.import('resource://calendar/modules/calUtils.jsm').cal;
+    } catch (e) {
+      throw new Error('Something went wrong when trying to import Lightning');
+    }
+    const davUrl = Prefs.get('extensions.op.autoconf.davUrl');
 
     calendarSpecs.forEach(calendarSpec => {
-      let name = calendarSpec.name,
-          calendar = Calendars.find(name);
+      const name = calendarSpec.name;
+      let calendar = Calendars.find(name);
 
       calendarSpec.uri = utils.newURI(davUrl + calendarSpec.uri);
 
@@ -51,21 +56,26 @@ const Calendars = {
   },
 
   find: function(name) {
-    let count = {},
+    try {
+      cal = ChromeUtils.import('resource://calendar/modules/calUtils.jsm').cal;
+    } catch (e) {
+      throw new Error('Something went wrong when trying to import Lightning');
+    }
+    const count = {},
         calendars = cal.getCalendarManager().getCalendars(count);
 
     logger.info('Searching calendar ${name} amongst ${count} registered calendars', { name, count: count.value });
 
-    for (let i in calendars) {
+    for (const i in calendars) {
       if (calendars.hasOwnProperty(i)) {
-        let calendar = calendars[i],
+        const calendar = calendars[i],
             calName = calendar.name,
             calId = calendar.id;
 
-        logger.debug('Matching calendar ${calName} (${calId}) against ${name}', { calId, name, calName });
+        logger.debug(`Matching calendar ${calName} (${calId}) against ${name}`);
 
         if (calName === name) {
-          logger.info('Returning found calendar ${calId} matching ${name}', { calId, name });
+          logger.info(`Returning found calendar ${calId} matching ${name}`);
 
           return calendar;
         }
@@ -76,15 +86,15 @@ const Calendars = {
   },
 
   isLightningInstalled: function() {
-    let isInstalled = false;
-
     try {
-      isInstalled = cal !== undefined;
-    } catch(e) {}
+      cal = ChromeUtils.import('resource://calendar/modules/calUtils.jsm').cal;
+    } catch (e) {
+      throw new Error('Something went wrong when trying to import Lightning');
+    }
+    let isInstalled = (cal !== undefined) || false;
 
     logger.debug('Lightning is ' + (!isInstalled ? 'not ' : '') + 'installed !');
 
     return isInstalled;
   }
-
 };

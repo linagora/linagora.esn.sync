@@ -8,9 +8,13 @@ const Cc = Components.classes;
 const Ci = Components.interfaces;
 const Cu = Components.utils;
 
-Cu.import('resource://op-tb-autoconf/modules/Log.jsm');
-Cu.import('resource://op-tb-autoconf/modules/Utils.jsm');
-Cu.import('resource://op-tb-autoconf/modules/Passwords.jsm');
+var { ExtensionParent } = ChromeUtils.import('resource://gre/modules/ExtensionParent.jsm');
+var extension = ExtensionParent.GlobalManager.getExtension('op-tb-autoconf@linagora.com');
+
+var { getLogger } = ChromeUtils.import(extension.rootURI.resolve('modules/Log.jsm'));
+var { Utils } = ChromeUtils.import(extension.rootURI.resolve('modules/Utils.jsm'));
+var { Passwords } = ChromeUtils.import(extension.rootURI.resolve('modules/Passwords.jsm'));
+var { Prefs } = ChromeUtils.import(extension.rootURI.resolve('modules/Prefs.jsm'));
 
 /////
 
@@ -23,9 +27,15 @@ const Accounts = {
 
   setupAccounts: function(accountSpecs) {
     accountSpecs.forEach(accountSpec => {
-      let smtpServer = createOrUpdateSmtpServer(accountSpec.smtp),
-          imapServer =  createOrUpdateImapServer(accountSpec.imap),
+      const smtpServer = createOrUpdateSmtpServer(accountSpec.smtp),
+          imapServer = createOrUpdateImapServer(accountSpec.imap),
           account = createOrUpdateAccount(imapServer);
+      if (accountSpec.imap) {
+        createOrUpdateImapAccount({
+          url: `${accountSpec.imap.hostName}:${accountSpec.imap.port}`,
+          username: accountSpec.imap.username
+        });
+      }
 
       accountSpec.identities.forEach(identitySpec => {
         let identity = utils.find(account.identities, Ci.nsIMsgIdentity, { identityName: `${identitySpec.fullName} <${identitySpec.email}>` });
@@ -42,6 +52,13 @@ const Accounts = {
 
       });
     });
+    createOrUpdateDavAccount();
+  },
+  storePassword: function(url, username) {
+    return storeServerPassword({
+      serverURI: url,
+      username
+    });
   }
 
 };
@@ -49,7 +66,7 @@ const Accounts = {
 /////
 
 function storeServerPassword(server) {
-  let uri = server.serverURI,
+  const uri = server.serverURI,
       username = server.username,
       password = Passwords.getCredentialsForUsername(username).password;
 
@@ -81,6 +98,22 @@ function createOrUpdateImapServer(imap) {
   }
 
   return storeServerPassword(utils.copyProperties(imap, server));
+}
+
+function createOrUpdateDavAccount() {
+  const davUrl = Prefs.get('extensions.op.autoconf.davUrl');
+  const username = Prefs.get('extensions.op.autoconf.username');
+  return storeServerPassword({
+    serverURI: davUrl,
+    username
+  });
+}
+
+function createOrUpdateImapAccount(url, username) {
+  return storeServerPassword({
+    serverURI: url,
+    username
+  });
 }
 
 function createOrUpdateAccount(imapServer) {
