@@ -9,13 +9,26 @@
   "name": "OpenPaas Autoconfiguration",
   "description": "Thunderbird autoconfiguration and automatic update for OpenPaas",
   "version": "1.0.0",
-  "creator": "Linagora",
-  "contributor": "Linagora",
-  "legacy": {
-    "type": "xul",
-    "options": {
-      "page": "chrome://op-tb-autoconf/content/overlays/thunderbird/thunderbird-overlay.xul",
-      "open_in_tab": false
+  "author": "Linagora",
+  "experiment_apis": {
+    "OpenPaasAutoconf": {
+      "schema": "chrome/content/schema.json",
+      "parent": {
+        "scopes": [
+          "addon_parent"
+        ],
+        "paths": [
+          [
+            "OpenPaasAutoconf"
+          ]
+        ],
+        "script": "chrome/content/op-tb-autoconf.js"
+      }
     }
+  },
+  "background": {
+    "scripts": [
+      "chrome/content/background.js"
+    ]
   }
 }

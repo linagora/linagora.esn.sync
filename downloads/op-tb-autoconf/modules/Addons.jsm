@@ -7,12 +7,16 @@ const EXPORTED_SYMBOLS = ['Addons'];
 const Cc = Components.classes;
 const Ci = Components.interfaces;
 const Cu = Components.utils;
+var { ExtensionParent } = ChromeUtils.import("resource://gre/modules/ExtensionParent.jsm");
+var extension = ExtensionParent.GlobalManager.getExtension("op-tb-autoconf@linagora.com");
 
-Cu.import('resource://gre/modules/Services.jsm');
-Cu.import('resource://gre/modules/AddonManager.jsm');
-Cu.import('resource://op-tb-autoconf/modules/Log.jsm');
-Cu.import('resource://op-tb-autoconf/modules/Utils.jsm');
-Cu.import('resource://op-tb-autoconf/modules/Prefs.jsm');
+var { Services } = ChromeUtils.import('resource://gre/modules/Services.jsm');
+var { AddonManager } = ChromeUtils.import('resource://gre/modules/AddonManager.jsm');
+var { getLogger } = ChromeUtils.import(extension.rootURI.resolve("modules/Log.jsm"));
+var { Utils } = ChromeUtils.import(extension.rootURI.resolve("modules/Utils.jsm"));
+var { Prefs } = ChromeUtils.import(extension.rootURI.resolve("modules/Prefs.jsm"));
+var { Calendars } = ChromeUtils.import(extension.rootURI.resolve("modules/Calendars.jsm"));
+var { Contacts } = ChromeUtils.import(extension.rootURI.resolve("modules/Contacts.jsm"));
 
 /////
 
@@ -26,7 +30,7 @@ const Addons = {
   setupAddons: function(addonSpecs) {
     let installers = [];
 
-    addonSpecs.forEach(addonSpec => {
+    return Promise.all(addonSpecs.map(addonSpec => {
       let id = addonSpec.id,
           name = addonSpec.name || id;
 
@@ -38,7 +42,7 @@ const Addons = {
         return logger.warn('No compatible version found for addon ${name}', { name });
       }
 
-      AddonManager.getAddonByID(id)
+      return AddonManager.getAddonByID(id)
         .then(addon => {
           const latestVersion = versions[0];
 
@@ -50,8 +54,9 @@ const Addons = {
           }
 
           logger.info('Addon ${name} ${id} is up-to-date (${version})', { name, id, version: addon.version });
+          return true;
         });
-    });
+    }));
   }
 
 };
@@ -108,14 +113,26 @@ function installAddon(installers, name, version) {
 
   logger.info('About to install addon ${name} v${v} from ${url}', { name, url, v });
 
-  AddonManager.getInstallForURL(url).then(installer => startAddonInstallation(installers, name, installer));
+  return AddonManager.getInstallForURL(url).then(installer => startAddonInstallation(installers, name, installer));
 }
 
 function startAddonInstallation(installers, name, installer) {
   installers.push(installer);
 
-  installer.addListener(newInstallationListener(installers, name));
-  installer.install();
+  return new Promise((resolve, reject) => {
+    installer.addListener({
+      'onInstallEnded': () => {
+        return resolve();
+      },
+      'onDownloadFailed': () => {
+        return reject('Download failed');
+      },
+      'onInstallFailed': () => {
+        return reject('Install failed');
+      }
+    })
+    installer.install();
+  })
 }
 
 function newInstallationListener(installers, name) {
@@ -148,7 +165,7 @@ function newInstallationListener(installers, name) {
     log(fn, install);
 
     if (installers.filter(findCompletedInstallations).length === installers.length) {
-      utils.restartWithPrompt();
+      
     }
   });
 

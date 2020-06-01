@@ -3,7 +3,7 @@ const ejs = require('ejs');
 const q = require('q');
 const path = require('path');
 
-const PREFS = 'defaults/preferences/op-tb-autoconf.js';
+const PREFS = 'defaults/preferences/constants.js';
 const EXTENSION_BASE_PATH = path.normalize(path.join(__dirname, '../../../downloads/op-tb-autoconf/'));
 
 module.exports = dependencies => {
@@ -17,7 +17,7 @@ module.exports = dependencies => {
     archive.pipe(res);
 
     // Add everything but the preferences file...
-    archive.glob('**/!(op-tb-autoconf.js)', { cwd: EXTENSION_BASE_PATH });
+    archive.glob('**/!(constants.js)', { cwd: EXTENSION_BASE_PATH });
 
     // ...because we render it through ejs so that it contains proper default values
     esnConfig('web').inModule('core').forUser(user).get()
