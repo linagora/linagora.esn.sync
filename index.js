@@ -1,23 +1,34 @@
 'use strict';
 
-const path = require('path'),
-      AwesomeModule = require('awesome-module');
+const path = require('path');
+const AwesomeModule = require('awesome-module');
+const glob = require('glob-all');
 const Dependency = AwesomeModule.AwesomeModuleDependency;
 
 const FRONTEND_JS_PATH = `${__dirname}/frontend/app/`;
+const FRONTEND_JS_PATH_BUILD = __dirname + '/dist/';
 const innerApps = ['esn'];
-const angularAppModuleFiles = [
-  'app.js',
-  'components/main/main.js',
-  'components/android/android.js',
-  'components/ios/ios.js',
-  'components/outlook/outlook.js',
-  'components/thunderbird/thunderbird.js',
-  'components/controlcenter-menu-entry/controlcenter-menu-entry.js'
-];
-const modulesOptions = {
-  localJsFiles: angularAppModuleFiles.map(file => path.resolve(FRONTEND_JS_PATH, file))
-};
+
+let angularAppModuleFiles, modulesOptions;
+
+if (process.env.NODE_ENV !== 'production') {
+  angularAppModuleFiles = glob.sync([
+    FRONTEND_JS_PATH + 'app.js',
+    FRONTEND_JS_PATH + '**/!(*spec).js'
+  ]);
+
+  modulesOptions = {
+    localJsFiles: angularAppModuleFiles.map(file => path.resolve(FRONTEND_JS_PATH, file))
+  };
+} else {
+  angularAppModuleFiles = glob.sync([
+    FRONTEND_JS_PATH_BUILD + '*.js'
+  ]);
+
+  modulesOptions = {
+    localJsFiles: angularAppModuleFiles.map(file => path.resolve(FRONTEND_JS_PATH_BUILD, file))
+  };
+}
 
 const moduleData = {
   shortName: 'sync',

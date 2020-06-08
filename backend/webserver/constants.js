@@ -1,4 +1,7 @@
 'use strict';
 
-module.exports.FRONTEND_PATH = require('path').normalize(__dirname + '/../../frontend');
-module.exports.DOWNLOAD_PATH = require('path').normalize(__dirname + '/../../downloads');
+const path = require('path');
+
+module.exports.FRONTEND_PATH = path.normalize(__dirname + '/../../frontend');
+module.exports.FRONTEND_PATH_BUILD = path.normalize(__dirname + '/../../dist');
+module.exports.DOWNLOAD_PATH = path.normalize(__dirname + '/../../downloads');
