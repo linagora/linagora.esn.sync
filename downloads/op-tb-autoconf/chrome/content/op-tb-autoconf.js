@@ -4,7 +4,7 @@ var { Services } = ChromeUtils.import('resource://gre/modules/Services.jsm');
 var { ExtensionParent } = ChromeUtils.import('resource://gre/modules/ExtensionParent.jsm');
 var { ExtensionCommon } = ChromeUtils.import('resource://gre/modules/ExtensionCommon.jsm');
 var extension = ExtensionParent.GlobalManager.getExtension('op-tb-autoconf@linagora.com');
-var { setInterval, setTimeout } = ChromeUtils.import('resource://gre/modules/Timer.jsm');
+var { setInterval, setTimeout, clearInterval } = ChromeUtils.import('resource://gre/modules/Timer.jsm');
 var { Preferences } = ChromeUtils.import('resource://gre/modules/Preferences.jsm');
 var { httpRequest } = ChromeUtils.import('resource://gre/modules/Http.jsm');
 

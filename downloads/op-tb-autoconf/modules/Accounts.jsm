@@ -94,7 +94,7 @@ function createOrUpdateImapServer(imap) {
   if (!server) {
     logger.info('About to create a new IMAP server');
 
-    server = manager.createIncomingServer(imap.username, imap.hostName, 'imap');
+    server = manager.createIncomingServer(imap.username, imap.hostName, 'imap', imap.socketType);
   }
 
   return storeServerPassword(utils.copyProperties(imap, server));
